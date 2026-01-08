@@ -1,6 +1,6 @@
 package store.dto;
 
-import store.vo.Date;
+import store.domain.Date;
 
 public record Dto(String content) {
     public static Dto from(Date date) {

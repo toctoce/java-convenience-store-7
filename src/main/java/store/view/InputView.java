@@ -1,7 +1,7 @@
 package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
-import store.vo.Date;
+import store.domain.Date;
 
 public class InputView {
 
