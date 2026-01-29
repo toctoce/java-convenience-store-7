@@ -1,44 +1,42 @@
 package store.util;
 
-import static store.util.DateParser.DATE_REGEX;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import store.common.StoreException;
+import store.domain.product.Product;
 import store.domain.promotion.Promotion;
 import store.domain.promotion.Promotions;
 
-public class PromotionCsvParser {
+public class ProductCsvParser {
 
     private static final String CSV_REGEX = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    private static final String PROMOTION_REGEX = "[^,]+,[0-9]+,[0-9]+," + DATE_REGEX + "," + DATE_REGEX;
+    private static final String PRODUCT_REGEX = "[^,]+,[0-9]+,[0-9]+,[^,]+";
 
-    public static final String FILENAME = "promotions.md";
+//    name,price,quantity,promotion
+//    콜라,1000,10,탄산2+1
 
-    public static Promotions parseCSV() {
+    public static final String FILENAME = "products.md";
+
+    public static Promotions parseCSV(Promotions promotions) {
         List<List<String>> parsedLines = readCSV();
-        List<Promotion> promotions = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         for (List<String> parsedLine : parsedLines) {
             String name = parsedLine.get(0);
-            int buyCount = Integer.parseInt(parsedLine.get(1));
-            int giveCount = Integer.parseInt(parsedLine.get(2));
-            LocalDate start = DateParser.parse(parsedLine.get(3));
-            LocalDate end = DateParser.parse(parsedLine.get(4));
-            promotions.add(Promotion.of(name, buyCount, giveCount, start, end));
+            int price = Integer.parseInt(parsedLine.get(1));
+            int quantity = Integer.parseInt(parsedLine.get(2));
+            Promotion promotion = promotions.findByName(parsedLine.get(3));
         }
-        Promotions promotions1 = Promotions.of(promotions);
-        return Promotions.of(promotions);
+        return null;
     }
 
     private static List<List<String>> readCSV() {
         try {
-            URL resource = PromotionCsvParser.class.getClassLoader().getResource(FILENAME);
+            URL resource = ProductCsvParser.class.getClassLoader().getResource(FILENAME);
             if (resource == null) {
                 throw new StoreException("[ERROR] 올바르지 않은 CSV 형식입니다.");
             }
@@ -57,7 +55,7 @@ public class PromotionCsvParser {
     }
 
     private static List<String> parseLine(String line) {
-        if (!line.matches(PROMOTION_REGEX)) {
+        if (!line.matches(PRODUCT_REGEX)) {
             throw new StoreException("[ERROR] 올바르지 않은 CSV 형식입니다.");
         }
         String[] parsedArr = line.split(CSV_REGEX, -1);

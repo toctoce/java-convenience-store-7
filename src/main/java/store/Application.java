@@ -1,10 +1,15 @@
 package store;
 
-import store.config.AppConfig;
+import store.domain.promotion.Promotions;
+import store.util.PromotionCsvParser;
+
 
 public class Application {
     public static void main(String[] args) {
-        AppConfig appConfig = new AppConfig();
-        appConfig.controller().run();
+
+        Promotions promotions = PromotionCsvParser.parseCSV();
+        System.out.println("promotions = " + promotions);
+//        AppConfig appConfig = new AppConfig();
+//        appConfig.controller().run();
     }
 }
